@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Application", "src\cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.CrossCuttingConcers", "src\corePackages\Core.CrossCuttingConcers\Core.CrossCuttingConcers.csproj", "{DAA1FFAA-74C7-48AE-A372-C8136F8E99B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ConsoleUI", "src\corePackages\Core.ConsoleUI\Core.ConsoleUI.csproj", "{92C3F668-A726-49AA-8652-B479588BD68F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{DAA1FFAA-74C7-48AE-A372-C8136F8E99B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAA1FFAA-74C7-48AE-A372-C8136F8E99B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAA1FFAA-74C7-48AE-A372-C8136F8E99B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92C3F668-A726-49AA-8652-B479588BD68F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92C3F668-A726-49AA-8652-B479588BD68F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92C3F668-A726-49AA-8652-B479588BD68F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92C3F668-A726-49AA-8652-B479588BD68F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{218EF074-05BD-424B-AA94-39168B176191} = {930E16E5-8D6F-4DED-BF5F-A29BBE5F3D24}
 		{ABAE025D-8DB7-4BEC-9B84-6E279246C6EA} = {930E16E5-8D6F-4DED-BF5F-A29BBE5F3D24}
 		{DAA1FFAA-74C7-48AE-A372-C8136F8E99B2} = {930E16E5-8D6F-4DED-BF5F-A29BBE5F3D24}
+		{92C3F668-A726-49AA-8652-B479588BD68F} = {930E16E5-8D6F-4DED-BF5F-A29BBE5F3D24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {70B48DC2-4941-4DC9-9D67-A29D673A0C26}
