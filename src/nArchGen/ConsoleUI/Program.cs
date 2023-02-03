@@ -25,7 +25,7 @@ app.Configure(config =>
 {
     #region Controller
 
-    config.AddBranch(name: "generate", generate =>
+    config.AddBranch(name: "generate", action: generate =>
     {
         generate.AddCommand<GenerateCrudCommand>(name: "crud")
                 .WithDescription(description: "Generate CRUD operations for entity")

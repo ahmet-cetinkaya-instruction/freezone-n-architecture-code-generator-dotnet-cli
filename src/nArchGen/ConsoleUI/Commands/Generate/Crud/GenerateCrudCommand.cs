@@ -24,7 +24,7 @@ public class GenerateCrudCommand : AsyncCommand<GenerateCrudCommand.Settings>
         await AnsiConsole.Status()
                          .Spinner(Spinner.Known.Dots2)
                          .SpinnerStyle(style: Style.Parse(text: "blue"))
-                         .StartAsync(status: "Generating...", async ctx =>
+                         .StartAsync(status: "Generating...", action: async ctx =>
                          {
                              await foreach
                                  (GeneratedCrudStreamCommandResponse result in resultsStream)

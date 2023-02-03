@@ -28,6 +28,6 @@ public class TypeRegistrar : ITypeRegistrar
     {
         if (func is null) throw new ArgumentNullException(paramName: nameof(func));
 
-        _builder.AddSingleton(service, provider => func());
+        _builder.AddSingleton(service, implementationFactory: provider => func());
     }
 }
