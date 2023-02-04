@@ -1,0 +1,6 @@
+﻿namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Commands.Delete;
+
+public class Deleted{{ entity.name | string.pascalcase }}Response
+{
+    public int Id { get; set; }
+}

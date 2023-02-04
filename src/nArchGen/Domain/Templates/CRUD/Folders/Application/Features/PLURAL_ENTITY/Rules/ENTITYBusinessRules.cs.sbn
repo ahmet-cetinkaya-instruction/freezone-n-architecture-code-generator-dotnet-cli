@@ -1,0 +1,7 @@
+﻿using Freezone.Core.Application.Rules;
+
+namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Rules;
+
+public class {{ entity.name | string.pascalcase }}BusinessRules : BaseBusinessRules
+{
+}

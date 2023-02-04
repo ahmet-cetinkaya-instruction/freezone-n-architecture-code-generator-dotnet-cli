@@ -1,0 +1,40 @@
+﻿using Application.Services.Repositories;
+using AutoMapper;
+using Domain.Entities;{{ if is_caching_used }}
+using Freezone.Core.Application.Pipelines.Caching;{{ end }}
+using Freezone.Core.Application.Requests;
+using Freezone.Core.Persistence.Paging;
+using MediatR;
+
+namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Queries.GetList;
+
+public class GetList{{ entity.name | string.pascalcase }}Query : IRequest<GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto>>{{ if is_caching_used }}, ICachableRequest{{ end }}
+{
+    public PageRequest PageRequest { get; set; }
+    {{ if is_caching_used }}
+
+    public bool BypassCache { get; }
+    public string CacheKey => "GetList{{ entity.name | string.pascalcase }}";
+    public TimeSpan? SlidingExpiration { get; }{{ end }}
+
+    public class GetList{{ entity.name | string.pascalcase }}QueryHandler : IRequestHandler<GetList{{ entity.name | string.pascalcase }}Query, GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto>>
+    {
+        private readonly I{{ entity.name | string.pascalcase }}Repository _{{ entity.name | string.camelcase }}Repository;
+        private readonly IMapper _mapper;
+
+        public GetList{{ entity.name | string.pascalcase }}QueryHandler(I{{ entity.name | string.pascalcase }}Repository {{ entity.name | string.camelcase }}Repository, IMapper mapper)
+        {
+            _{{ entity.name | string.camelcase }}Repository = {{ entity.name | string.camelcase }}Repository;
+            _mapper = mapper;
+        }
+
+        public async Task<GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto>> Handle(GetList{{ entity.name | string.pascalcase }}Query request,
+                                                                   CancellationToken cancellationToken)
+        {
+            IPaginate<{{ entity.name | string.pascalcase }}> {{ entity.name | string.camelcase | string.plural }} = await _{{ entity.name | string.camelcase }}Repository.GetListAsync(index: request.PageRequest.Page,
+                                                                          size: request.PageRequest.PageSize);
+            GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto> response = _mapper.Map<GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto>>({{ entity.name | string.camelcase | string.plural }});
+            return response;
+        }
+    }
+}

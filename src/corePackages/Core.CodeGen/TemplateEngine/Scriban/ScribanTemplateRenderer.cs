@@ -12,7 +12,7 @@ public class ScribanTemplateRenderer : ITemplateRenderer
         _builtinFunctionsExtensions = new ScribanBuiltinFunctionsExtensions();
     }
 
-    public string TemplateExtension => ".scriban";
+    public string TemplateExtension => "sbn";
 
     public async Task<string> RenderAsync(string template, ITemplateData data)
     {

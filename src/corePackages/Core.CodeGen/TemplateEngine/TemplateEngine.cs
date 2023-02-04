@@ -1,47 +1,65 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Core.CodeGen.File;
+﻿using Core.CodeGen.File;
 
-namespace Core.CodeGen.TemplateEngine
+namespace Core.CodeGen.TemplateEngine;
+
+public class TemplateEngine : ITemplateEngine
 {
-    public class TemplateEngine : ITemplateEngine
+    private readonly ITemplateRenderer _templateRenderer;
+
+    public TemplateEngine(ITemplateRenderer templateRenderer)
     {
-        private readonly ITemplateRenderer _templateRenderer;
+        _templateRenderer = templateRenderer;
+    }
 
-        public TemplateEngine(ITemplateRenderer templateRenderer)
+    public string TemplateExtension => _templateRenderer.TemplateExtension;
+
+    public async Task<string> RenderAsync(string template, ITemplateData templateData) =>
+        await _templateRenderer.RenderAsync(template, templateData);
+
+    public async Task<string> RenderFileAsync(string templateFilePath, string templateDir,
+                                              Dictionary<string, string> replacePathVariable, string outputDir,
+                                              ITemplateData templateData)
+    {
+        string templateFileText = await System.IO.File.ReadAllTextAsync(templateFilePath);
+
+        string newRenderedFileText = await _templateRenderer.RenderAsync(templateFileText, templateData);
+        string newRenderedFilePath = await _templateRenderer.RenderAsync(
+                                         template: getOutputFilePath(templateFilePath, templateDir, replacePathVariable,
+                                                                     outputDir),
+                                         templateData);
+
+        await FileHelper.CreateFileAsync(newRenderedFilePath, newRenderedFileText);
+        return newRenderedFilePath;
+    }
+
+    public async Task<ICollection<string>> RenderFileAsync(IList<string> templateFilePaths, string templateDir,
+                                                           Dictionary<string, string> replacePathVariable,
+                                                           string outputDir,
+                                                           ITemplateData templateData)
+
+    {
+        List<string> newRenderedFilePaths = new();
+        foreach (string templateFilePath in templateFilePaths)
         {
-            _templateRenderer = templateRenderer;
+            string newRenderedFilePath =
+                await RenderFileAsync(templateFilePath, templateDir, replacePathVariable, outputDir, templateData);
+            newRenderedFilePaths.Add(newRenderedFilePath);
         }
 
-        public async Task<string> RenderAsync(string template, ITemplateData templateData) =>
-            await _templateRenderer.RenderAsync(template, templateData);
+        return newRenderedFilePaths;
+    }
 
-        public async Task RenderFileAsync(string templateFilePath, string templateDir, ITemplateData templateData)
-        {
-            string templateFileText = await System.IO.File.ReadAllTextAsync(templateFilePath);
-
-            string newRenderedFileText = await _templateRenderer.RenderAsync(templateFileText, templateData);
-            string newRenderedFilePath = await _templateRenderer.RenderAsync(
-                                             template: getOutputFilePath(templateFilePath, templateDir),
-                                             templateData);
-
-            await FileHelper.CreateFileAsync(newRenderedFilePath, newRenderedFileText);
-        }
-
-        public async Task RenderFileAsync(IList<string> templateFilePaths, string templateDir,
-                                          ITemplateData templateData)
-
-        {
-            foreach (string templateFilePath in templateFilePaths)
-                await RenderFileAsync(templateFilePath, templateDir, templateData);
-        }
-
-        private string getOutputFilePath(string templateFilePath, string templateDir) =>
-            templateFilePath
-                .Replace(
-                    oldValue: @$"{DirectoryHelper.AssemblyDirectory}\{templateDir}",
-                    Environment.CurrentDirectory)
-                .Replace(_templateRenderer.TemplateExtension, string.Empty);
+    private string getOutputFilePath(string templateFilePath, string templateDir,
+                                     Dictionary<string, string> replacePathVariable, string outputDir)
+    {
+        string outputFilePath = templateFilePath;
+        foreach (KeyValuePair<string, string> replacePathVariableItem in replacePathVariable)
+            outputFilePath = outputFilePath.Replace(replacePathVariableItem.Key, replacePathVariableItem.Value);
+        outputFilePath = outputFilePath
+                         .Replace(
+                             templateDir,
+                             outputDir)
+                         .Replace(oldValue: $".{_templateRenderer.TemplateExtension}", string.Empty);
+        return outputFilePath;
     }
 }

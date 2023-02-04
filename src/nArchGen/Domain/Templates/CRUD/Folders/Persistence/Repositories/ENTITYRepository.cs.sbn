@@ -1,0 +1,13 @@
+﻿using Application.Services.Repositories;
+using Domain.Entities;
+using Freezone.Core.Persistence.Repositories;
+using Persistence.Contexts;
+
+namespace Persistence.Repositories;
+
+public class {{ entity.name | string.pascalcase }}Repository : EfRepositoryBase<{{ entity.name | string.pascalcase }}, BaseDbContext>, I{{ entity.name | string.pascalcase }}Repository
+{
+    public {{ entity.name | string.pascalcase }}Repository({{db_context_name}} context) : base(context)
+    {
+    }
+}

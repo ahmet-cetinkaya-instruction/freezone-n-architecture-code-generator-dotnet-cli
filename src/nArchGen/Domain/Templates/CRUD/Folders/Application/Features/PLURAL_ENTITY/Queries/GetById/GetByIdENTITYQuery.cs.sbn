@@ -1,0 +1,31 @@
+﻿using Application.Services.Repositories;
+using AutoMapper;
+using Domain.Entities;
+using MediatR;
+
+namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Queries.GetById;
+
+public class GetById{{ entity.name | string.pascalcase }}Query : IRequest<GetById{{ entity.name | string.pascalcase }}Response>
+{
+    public int Id { get; set; }
+
+    public class GetById{{ entity.name | string.pascalcase }}QueryHandler : IRequestHandler<GetById{{ entity.name | string.pascalcase }}Query, GetById{{ entity.name | string.pascalcase }}Response>
+    {
+        private readonly I{{ entity.name | string.pascalcase }}Repository _{{ entity.name | string.camelcase }}Repository;
+        private readonly IMapper _mapper;
+
+        public GetById{{ entity.name | string.pascalcase }}QueryHandler(I{{ entity.name | string.pascalcase }}Repository {{ entity.name | string.camelcase }}Repository, IMapper mapper)
+        {
+            _{{ entity.name | string.camelcase }}Repository = {{ entity.name | string.camelcase }}Repository;
+            _mapper = mapper;
+        }
+
+        public async Task<GetById{{ entity.name | string.pascalcase }}Response> Handle(GetById{{ entity.name | string.pascalcase }}Query request, CancellationToken cancellationToken)
+        {
+            {{ entity.name | string.pascalcase }}? {{ entity.name | string.camelcase }} = await _{{ entity.name | string.camelcase }}Repository.GetAsync(b => b.Id == request.Id);
+
+            GetById{{ entity.name | string.pascalcase }}Response response = _mapper.Map<GetById{{ entity.name | string.pascalcase }}Response>({{ entity.name | string.camelcase }});
+            return response;
+        }
+    }
+}

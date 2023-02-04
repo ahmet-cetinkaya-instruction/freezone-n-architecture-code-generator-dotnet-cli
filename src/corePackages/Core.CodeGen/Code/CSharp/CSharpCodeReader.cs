@@ -16,7 +16,7 @@ public static class CSharpCodeReader
         return match.Groups[1].Value;
     }
 
-    public static async Task<string> ReadBaseClassName(string filePath)
+    public static async Task<string> ReadBaseClassNameAsync(string filePath)
     {
         string fileContent = await System.IO.File.ReadAllTextAsync(filePath);
         const string pattern = @"class\s+\w+\s*:?\s*(\w+)";
@@ -27,7 +27,7 @@ public static class CSharpCodeReader
         return match.Groups[1].Value;
     }
 
-    public static async Task<ICollection<string>> ReadBaseClassGenericArguments(string filePath)
+    public static async Task<ICollection<string>> ReadBaseClassGenericArgumentsAsync(string filePath)
     {
         string fileContent = await System.IO.File.ReadAllTextAsync(filePath);
         const string pattern = @"class\s+\w+\s*:?\s*(\w+)\s*<([\w,\s]+)>";
@@ -39,7 +39,7 @@ public static class CSharpCodeReader
         return genericArguments.Select(genericArgument => genericArgument.Trim()).ToArray();
     }
 
-    public static async Task<ICollection<PropertyInfo>> ReadClassProperties(string filePath)
+    public static async Task<ICollection<PropertyInfo>> ReadClassPropertiesAsync(string filePath)
     {
         string fileContent = await System.IO.File.ReadAllTextAsync(filePath);
         const string pattern =
