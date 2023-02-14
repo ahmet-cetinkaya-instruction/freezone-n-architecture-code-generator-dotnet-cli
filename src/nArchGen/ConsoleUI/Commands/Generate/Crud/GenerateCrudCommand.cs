@@ -38,6 +38,7 @@ public class GenerateCrudCommand : AsyncCommand<GenerateCrudCommand.Settings>
                 IsCachingUsed = settings.IsCachingUsed,
                 IsLoggingUsed = settings.IsLoggingUsed,
                 IsTransactionUsed = settings.IsTransactionUsed,
+                IsSecuredOperationUsed = settings.IsSecuredOperationUsed,
                 DbContextName = settings.DbContextName!
             }
         };
@@ -90,7 +91,7 @@ public class GenerateCrudCommand : AsyncCommand<GenerateCrudCommand.Settings>
         [CommandOption("-l|--logging")] public bool IsLoggingUsed { get; set; }
 
         [CommandOption("-t|--transaction")] public bool IsTransactionUsed { get; set; }
-
+        [CommandOption("-s|--secured")] public bool IsSecuredOperationUsed { get; set; }
         [CommandOption("-d|--dbcontext")] public string? DbContextName { get; set; }
 
         public void CheckEntityArgument()
@@ -158,6 +159,9 @@ public class GenerateCrudCommand : AsyncCommand<GenerateCrudCommand.Settings>
             if (IsTransactionUsed)
                 AnsiConsole.MarkupLine("[green]Transaction[/] is used.");
             else mechanismsToPrompt.Add("Transaction");
+            if (IsSecuredOperationUsed)
+                AnsiConsole.MarkupLine("[green]SecuredOperation[/] is used.");
+            else mechanismsToPrompt.Add("Secured Operation");
 
             if (mechanismsToPrompt.Count == 0) return;
 
@@ -184,6 +188,9 @@ public class GenerateCrudCommand : AsyncCommand<GenerateCrudCommand.Settings>
                         break;
                     case "Transaction":
                         IsTransactionUsed = true;
+                        break;
+                    case "Secured Operation":
+                        IsSecuredOperationUsed = true;
                         break;
                 }
             });

@@ -1,0 +1,4 @@
+seed.Add(new OperationClaim { Id = ++id, Name = "{{ entity.name | string.pascalcase | string.plural }}.Create" });
+seed.Add(new OperationClaim { Id = ++id, Name = "{{ entity.name | string.pascalcase | string.plural }}.Delete" });
+seed.Add(new OperationClaim { Id = ++id, Name = "{{ entity.name | string.pascalcase | string.plural }}.Update" });
+seed.Add(new OperationClaim { Id = ++id, Name = "{{ entity.name | string.pascalcase | string.plural }}.Get" });

@@ -42,6 +42,11 @@ public class GenerateCrudCommandRequest : IStreamRequest<GeneratedCrudStreamComm
             newFilePaths.AddRange(await generatePersistenceCodes(request.CrudTemplateData));
             response.LastOperationMessage = "Persistence layer codes have been generated.";
 
+            response.CurrentStatusMessage = "Adding feature operation claims as seed...";
+            yield return response;
+            updatedFilePaths.Add(await injectFeatureOperationClaims(request.CrudTemplateData));
+            response.LastOperationMessage = "Feature operation claims have been added.";
+
             response.CurrentStatusMessage = "Generating Application layer codes...";
             yield return response;
             newFilePaths.AddRange(await generateApplicationCodes(request.CrudTemplateData));
@@ -83,6 +88,26 @@ public class GenerateCrudCommandRequest : IStreamRequest<GeneratedCrudStreamComm
             string templateDir = @$"{DirectoryHelper.AssemblyDirectory}\{Templates.Paths.Crud}\Folders\Persistence";
             return await generateFolderCodes(templateDir, outputDir: $@"{Environment.CurrentDirectory}\Persistence",
                                              crudTemplateData);
+        }
+
+        private async Task<string> injectFeatureOperationClaims(CrudTemplateData crudTemplateData)
+        {
+            string operationClaimConfigurationFilePath =
+                @$"{Environment.CurrentDirectory}\Persistence\EntityConfigurations\OperationClaimConfiguration.cs";
+            string[] seedTemplateCodeLines =
+                await File.ReadAllLinesAsync(
+                    @$"{DirectoryHelper.AssemblyDirectory}\{Templates.Paths.Crud}\Lines\EntityFeatureOperationClaims.cs.sbn");
+
+            List<string> seedCodeLines = new();
+            foreach (string templateCodeLine in seedTemplateCodeLines)
+            {
+                string seedCodeLine = await _templateEngine.RenderAsync(templateCodeLine, crudTemplateData);
+                seedCodeLines.Add(seedCodeLine);
+            }
+
+            await CSharpCodeInjector.AddCodeLinesToRegionAsync(operationClaimConfigurationFilePath, seedCodeLines,
+                                                     regionName: "FeatureOperationClaims");
+            return operationClaimConfigurationFilePath;
         }
 
         private async Task<ICollection<string>> generateApplicationCodes(CrudTemplateData crudTemplateData)

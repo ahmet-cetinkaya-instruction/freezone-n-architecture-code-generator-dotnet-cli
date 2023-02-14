@@ -1,13 +1,18 @@
-﻿using Application.Services.Repositories;
+﻿using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
+using Application.Services.Repositories;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities;{{ if is_secured_operation_used }}
+using Freezone.Core.Application.Pipelines.Authorization;{{ end }}
 using MediatR;
 
 namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Queries.GetById;
 
-public class GetById{{ entity.name | string.pascalcase }}Query : IRequest<GetById{{ entity.name | string.pascalcase }}Response>
+public class GetById{{ entity.name | string.pascalcase }}Query : IRequest<GetById{{ entity.name | string.pascalcase }}Response>{{ if is_secured_operation_used }}, ISecuredOperation{{ end }}
 {
     public int Id { get; set; }
+    {{ if is_secured_operation_used }}
+
+    public string[] Roles => new string[] { {{ entity.name | string.pascalcase | string.plural }}Roles.Get };{{ end }}
 
     public class GetById{{ entity.name | string.pascalcase }}QueryHandler : IRequestHandler<GetById{{ entity.name | string.pascalcase }}Query, GetById{{ entity.name | string.pascalcase }}Response>
     {

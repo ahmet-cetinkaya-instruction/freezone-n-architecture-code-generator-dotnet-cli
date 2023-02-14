@@ -1,6 +1,8 @@
-﻿using Application.Services.Repositories;
+﻿using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
+using Application.Services.Repositories;
 using AutoMapper;
-using Domain.Entities;{{ if is_caching_used }}
+using Domain.Entities;{{ if is_secured_operation_used }}
+using Freezone.Core.Application.Pipelines.Authorization;{{ end }}{{ if is_caching_used }}
 using Freezone.Core.Application.Pipelines.Caching;{{ end }}
 using Freezone.Core.Application.Requests;
 using Freezone.Core.Persistence.Paging;
@@ -8,10 +10,12 @@ using MediatR;
 
 namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Queries.GetList;
 
-public class GetList{{ entity.name | string.pascalcase }}Query : IRequest<GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto>>{{ if is_caching_used }}, ICachableRequest{{ end }}
+public class GetList{{ entity.name | string.pascalcase }}Query : IRequest<GetListResponse<GetList{{ entity.name | string.pascalcase }}Dto>>{{ if is_secured_operation_used }}, ISecuredOperation{{ end }}{{ if is_caching_used }}, ICachableRequest{{ end }}
 {
     public PageRequest PageRequest { get; set; }
-    {{ if is_caching_used }}
+    {{ if is_secured_operation_used }}
+
+    public string[] Roles => new string[] { {{ entity.name | string.pascalcase | string.plural }}Roles.Get };{{ end }}{{ if is_caching_used }}
 
     public bool BypassCache { get; }
     public string CacheKey => "GetList{{ entity.name | string.pascalcase }}";

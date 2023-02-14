@@ -1,7 +1,9 @@
-﻿using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Rules;
+﻿using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
+using Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
-using Domain.Entities;{{ if is_caching_used }}
+using Domain.Entities;{{ if is_secured_operation_used }}
+using Freezone.Core.Application.Pipelines.Authorization;{{ end }}{{ if is_caching_used }}
 using Freezone.Core.Application.Pipelines.Caching;{{ end }}{{ if is_logging_used }}
 using Freezone.Core.Application.Pipelines.Logging;{{ end }}{{ if is_transaction_used }}
 using Freezone.Core.Application.Pipelines.Transaction;{{ end }}
@@ -9,10 +11,11 @@ using MediatR;
 
 namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Commands.Create;
 
-public class Create{{ entity.name | string.pascalcase }}Command : IRequest<Created{{ entity.name | string.pascalcase }}Response>{{ if is_caching_used }}, ICacheRemoverRequest{{ end }}{{ if is_logging_used }}, ILoggableRequest{{ end }}{{ if is_transaction_used }}, ITransactionableOperation{{ end }}
+public class Create{{ entity.name | string.pascalcase }}Command : IRequest<Created{{ entity.name | string.pascalcase }}Response>{{ if is_secured_operation_used }}, ISecuredOperation{{ end }}{{ if is_caching_used }}, ICacheRemoverRequest{{ end }}{{ if is_logging_used }}, ILoggableRequest{{ end }}{{ if is_transaction_used }}, ITransactionableOperation{{ end }}
 {%{{}%}{{ for propertyItem in entity.properties }}
-    public {{ propertyItem.type_name }} {{ propertyItem.name | string.pascalcase }} { get; set; }{{ end }}
-{{ if is_caching_used }}
+    public {{ propertyItem.type_name }} {{ propertyItem.name | string.pascalcase }} { get; set; }{{ end }}{{ if is_secured_operation_used }}
+
+    public string[] Roles => new[] { {{ entity.name | string.pascalcase | string.plural }}Roles.Create };{{ end }}{{ if is_caching_used }}
 
     public bool BypassCache { get; }
     public string CacheKey => "GetList{{ entity.name | string.pascalcase }}";{{ end }}

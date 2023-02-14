@@ -1,0 +1,9 @@
+namespace Application.Features.{{ entity.name | string.pascalcase | string.plural }}.Constants;
+
+public static class {{ entity.name | string.pascalcase | string.plural }}Roles
+{
+    public const string Create = "{{ entity.name | string.pascalcase | string.plural }}.Create";
+    public const string Delete = "{{ entity.name | string.pascalcase | string.plural }}.Delete";
+    public const string Update = "{{ entity.name | string.pascalcase | string.plural }}.Update";
+    public const string Get = "{{ entity.name | string.pascalcase | string.plural }}.Get";
+}
