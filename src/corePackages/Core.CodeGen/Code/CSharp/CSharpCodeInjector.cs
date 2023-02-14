@@ -110,4 +110,43 @@ public static class CSharpCodeInjector
 
         await System.IO.File.WriteAllLinesAsync(filePath, contents: updatedFileContent.ToArray());
     }
+
+    public static async Task AddCodeLinesToRegionAsync(string filePath, IEnumerable<string> linesToAdd, string regionName)
+    {
+        List<string> fileContent = (await System.IO.File.ReadAllLinesAsync(filePath)).ToList();
+        string regionStartRegex = @$"^\s*#region\s*{regionName}\s*";
+        const string regionEndRegex = @"^\s*#endregion\s*";
+
+        bool isInRegion = false;
+        int indexToAdd;
+        for (indexToAdd = 0; indexToAdd < fileContent.Count; indexToAdd++)
+        {
+            string fileLine = fileContent[indexToAdd];
+
+            if (Regex.Match(fileLine, regionStartRegex).Success)
+            {
+                isInRegion = true;
+                continue;
+            }
+
+            if (!isInRegion) continue;
+            if (!Regex.Match(fileLine, regionEndRegex).Success) continue;
+
+            string previousLine = fileContent[index: indexToAdd - 1];
+            if (Regex.Match(previousLine, regionStartRegex).Success)
+            {
+                fileContent.Insert(indexToAdd, string.Empty);
+                indexToAdd += 2;
+            }
+
+            if (!string.IsNullOrEmpty(previousLine)) fileContent.Insert(index: indexToAdd - 1, string.Empty);
+
+            int minimumSpaceCountInRegion = fileContent[indexToAdd].TakeWhile(char.IsWhiteSpace).Count();
+
+            fileContent.InsertRange(index: indexToAdd - 1, linesToAdd.Select(line =>
+                                                        new string(c: ' ', minimumSpaceCountInRegion) + line));
+            await System.IO.File.WriteAllLinesAsync(filePath, contents: fileContent);
+            break;
+        }
+    }
 }
