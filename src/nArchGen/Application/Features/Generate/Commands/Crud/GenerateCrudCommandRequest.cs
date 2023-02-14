@@ -14,12 +14,12 @@ public class GenerateCrudCommandRequest : IStreamRequest<GeneratedCrudStreamComm
     public string DbContextName { get; set; }
 
     public class
-        CreateBrandCommandRequestHandler : IStreamRequestHandler<GenerateCrudCommandRequest,
+        GenerateCrudCommandRequestHandler : IStreamRequestHandler<GenerateCrudCommandRequest,
             GeneratedCrudStreamCommandResponse>
     {
         private readonly ITemplateEngine _templateEngine;
 
-        public CreateBrandCommandRequestHandler(ITemplateEngine templateEngine)
+        public GenerateCrudCommandRequestHandler(ITemplateEngine templateEngine)
         {
             _templateEngine = templateEngine;
         }
